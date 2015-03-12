@@ -1,0 +1,241 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700);
+
+@import 'compass';
+
+$color-font: rgb(109, 115, 119);
+$color-primary: #1BA1F8;
+$color-default: #e9e9e9;
+$color-alert: #f2dede;
+$color-success: #dff0d8;
+
+$color-title: #2a2a2a;
+
+$sidebar-width: 250px;
+$sidebar-bg: #25272A;
+$sidebar-color: #e9e9e9;
+$sidebar-color-heading: lighten($sidebar-bg, 20%);
+
+/////////
+
+body{
+    font-family: 'Open Sans', sans-serif;
+    overflow: hidden;
+}
+
+*:focus {
+    outline: 0 !important;
+}
+
+.form-row{
+    margin-bottom: 8px;
+}
+
+.form-control{
+    border: solid 2px #f5f5f5;
+    box-shadow: none;
+    height: 42px;
+    padding: 12px 16px;
+    @include border-radius(2px);
+    font-size: 14px;
+    color: $color-font;
+    font-weight: 400;
+
+    &:focus,&:active{
+        box-shadow: none;
+        outline: none;
+        border-color: $color-primary;
+    }
+}
+
+.input-group-2{
+    position: relative;
+}
+.input-group-2 .input-group-addon{
+    position: absolute;
+    height: 42px;
+    line-height: 42px;
+    width: 42px;
+    text-align: center;
+    padding: 0;
+    background: none;
+    color: $color-font;
+    font-size: 1.6rem;
+    border: none;
+}
+.input-group-2 .form-control{
+    padding-left: 38px;
+}
+
+.btn-primary{
+    @include border-radius(2px);
+    @include background($color-primary);
+    @include box-shadow(0 2px darken($color-primary, 8%));
+    font-size: 14px;
+    border: none;
+    padding: 0 32px;
+    height: 42px;
+    line-height: 42px;
+    text-shadow: none;
+    @include transition(.33s);
+
+    &:hover,&:active,&:focus{
+        @include background( darken($color-primary,3%) );
+        @include box-shadow(0 2px darken($color-primary, 8%));
+    }
+}
+
+.alert-danger{
+    @include border-radius(2px);
+    @include background($color-alert);
+    @include box-shadow(0 2px darken($color-alert, 8%));
+    color: darken($color-alert, 40%);
+    border: none;
+}
+
+.alert-success{
+    @include border-radius(2px);
+    @include background($color-success);
+    @include box-shadow(0 2px darken($color-success, 8%));
+    color: darken($color-success, 40%);
+    border: none;
+}
+
+.sidebar{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: $sidebar-width;
+    height: 100%;
+    color: $sidebar-color;
+    @include background($sidebar-bg);
+}
+.sidebar-nav{
+    margin-top: 12px;
+
+    li{
+
+    }
+    li a{
+        color: $sidebar-color;
+        font-size: 12px;
+
+        &:hover,&:active,&:focus{
+            box-shadow: 0 1px 0 darken($sidebar-bg, 6%), inset 0 1px lighten($sidebar-bg, 6%);
+            @include background( darken($sidebar-bg, 2%) );
+        }
+    }
+
+    li.active a{
+        color: $sidebar-color;
+        border: none;
+        /*box-shadow: 0 1px 0 rgba(180, 182, 183, 0.1), inset 0 1px 2px rgba(5, 5, 5, 0.5);*/
+        box-shadow: 0 1px 0 lighten($sidebar-bg, 12%), inset 0 1px darken($sidebar-bg, 10%);
+        background: darken($sidebar-bg, 5%);
+    }
+
+    .heading{
+        display: block;
+        color: $sidebar-color-heading;
+        font-size: 12px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.1rem;
+        margin: 0;
+        padding: 16px 12px 16px 12px;
+    }
+
+    hr{
+        height: 0;
+        border: 0;
+        margin: 12px;
+        background: none;
+        border-top: 1px solid rgba(0,0,0,0.3);
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+}
+
+
+
+.content{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin-left: $sidebar-width;
+    background: #fff;
+    overflow: auto;
+    padding: 14px;
+}
+
+h2 .label{
+    font-size: 32px;
+    color: $color-title;
+    background: none;
+    border-radius: 0;
+    padding: 0;
+}
+
+.btn-default{
+    @include border-radius(2px);
+    @include background($color-default);
+    @include box-shadow(0 2px darken($color-default, 8%));
+    font-size: 14px;
+    border: none;
+    padding: 0 32px;
+    height: 42px;
+    line-height: 42px;
+    text-shadow: none;
+    @include transition(.33s);
+
+    &:hover,&:active,&:focus{
+        @include background( darken($color-default,3%) );
+        @include box-shadow(0 2px darken($color-default, 8%));
+    }
+}
+
+.navbar-form{
+    .btn{
+        height: 38px;
+        line-height: 38px;
+        margin-top: -4px;
+    }
+}
+
+.form-login .btn{
+    width: 100%;
+}
+
+.form-login{
+    max-width: 320px;
+    margin: 0 auto;
+}
+
+.login-footer-copy{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    color: #c3c3c7;
+    font-size: 12px;
+    font-weight: 400;
+    text-align: center;
+    padding-bottom: 12px;
+
+    a{
+        color: inherit;
+        text-decoration: none;
+    }
+}
+
+@media screen and (max-height: 320px){
+    .login-footer-copy{
+        display: none !important;
+    }
+}
+
+@media screen and (max-width: 480px){
+    /*    .form-login{
+            max-width: none;
+        }*/
+}
