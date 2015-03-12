@@ -14,7 +14,7 @@
                 bar = progressbar.find('.uk-progress-bar'),
                 settings = {
                     single: false,
-                    param: 'fotos[]',
+                    param: 'myfile[]',
                     action: './upload', // upload url
 
                     allow: '*.(jpg|jpeg|gif|png)', // allow only images
@@ -30,9 +30,13 @@
                     allcomplete: function (res) {
                         bar.css("width", "100%").text("Processando");
                         progressbar.addClass("uk-hidden");
-
                         console.log(res);
-                        set_uploads_images(res);
+                        set_uploads_images(res.FOTO);
+                        function logArrayElements(element, index, array) {
+                            console.log('a[' + index + '] = ' + element);
+                            $("#CODFOTOS").append('<input type="hidden" name="CODFOTO[]" value="' + element + '"/>');
+                        }
+                        res.CODFOTO.forEach(logArrayElements);
                     }
                 };
 
@@ -92,7 +96,7 @@
 
             var action = this.action;
             var data = new FormData();
-            $('input, textarea, select').each(function () {
+            $('input, textarea, select, file').each(function () {
                 data.append(this.name, this.value);
             });
 
@@ -103,8 +107,14 @@
                 contentType: false,
                 processData: false,
                 url: action,
-                success: function (res) {
-                    console.log(res);
+                success: function (data) {
+                    if (data['erro'] != "") {
+                        $("#visualizar").html(data['erro']);
+                    } else {
+                        $("#visualizar").html(data['success']);
+
+                    }
+
                 }
             });
             return false;

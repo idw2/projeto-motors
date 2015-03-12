@@ -9,16 +9,20 @@ define('APP', PATH . 'app' . DS);
 define('SYS', PATH . 'system' . DS);
 define('EXT', '.php');
 
+
+
 require SYS . 'functions.php';
 require SYS . 'model.php';
+require SYS . 'controller.php'; 
 require SYS . 'seo.php';
 require SYS . 'router.php';
 
 #CARREGA AS CLASSES MODELS DA APLICAÇÃO PRINCIPAL
 $modelos = array("model", "Conta_Model", "HTML_Model", "Produtos_Model");
 __autoloaddir(MODEL, $modelos);
+
 #CARREGA AS CLASSES CONTROLLERS DA APLICAÇÃO PRINCIPAL
-$controllers = array("adminController", "ajaxController", "carrosController", "contasController", "htmlController", "indexController", "informacoesController", "veiculosController");
+$controllers = array("controller", "adminController", "ajaxController", "carrosController", "contasController", "htmlController", "indexController", "informacoesController", "veiculosController");
 __autoloaddir(CONTROLLER, $controllers);
 
 require APP . 'libraries' . DS . 'json.php';

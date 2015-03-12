@@ -42,7 +42,7 @@
                             <form method="post">
                                 <h4>link iframe google maps</h4>
                                 <p><input class="form-control" style="min-width: 100%" id="conteudo" name="conteudo" value="{$conteudo}" placeholder="link iframe google maps"/></p>
-                                <p><button type="submit" class="btn btn-primary" name="enviar">ENVIAR</button></p>
+                                <p><div>{include file="btn_send.tpl"}</div></p>
 
                             </form>
                         </div>

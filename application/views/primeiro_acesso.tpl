@@ -47,7 +47,7 @@
                                 </div>	
                                 <br/>
                                 <div class="input-group input-group-lg">
-                                    <button type="submit" class="btn btn-primary btn-lg" role="button">Entrar</button>
+                                    {include file="btn_send.tpl"}
                                 </div>
 
                             </form>

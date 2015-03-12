@@ -3,9 +3,11 @@
 Class Veiculos extends Controller {
 
     public function __construct() {
-        $this->get_smarty();
-        $this->run();
-        $this->dados_relevantes();
+        if ($_GET[url] != "add") {
+            $this->get_smarty();
+            $this->run();
+            $this->dados_relevantes();
+        }
     }
 
     public function index_action() {
@@ -121,7 +123,7 @@ Class Veiculos extends Controller {
              * ESTE BLOCO PEGA OS FABRICANTES 
              * EXISTENTES NO BANCO DE DADOS             
              */
-            
+
             $fabricantes = $model->get_fabricantes();
 
             if ($fabricantes) {
@@ -150,12 +152,12 @@ Class Veiculos extends Controller {
                 unset($array);
             }
 
-            
+
             /*
              * ESTE BLOCO MONTA UMA SEQUENCIAS 
              * DE POSSIBILIDADES DE ANOS PARA OS VEICULOS          
              */
-            
+
             $anos = array();
             $y = (int) date("Y");
             $y_tmp = null;
@@ -269,9 +271,9 @@ Class Veiculos extends Controller {
             $this->view_tpl("cadastrar");
         }
     }
-    
-    public function cadastrar_modile() {
 
+    public function cadastrar_mobile(Array $dados) {
+        $_POST = $dados;
         $model = new Produtos_Model();
 
         $papeis[] = "ADMINISTRADOR";
@@ -283,7 +285,7 @@ Class Veiculos extends Controller {
              * ESTE BLOCO PEGA OS FABRICANTES 
              * EXISTENTES NO BANCO DE DADOS             
              */
-            
+
             $fabricantes = $model->get_fabricantes();
 
             if ($fabricantes) {
@@ -308,16 +310,16 @@ Class Veiculos extends Controller {
                     }
                 }
 
-                $this->assign('fabricantes', $array);
+                $fabricantes = $array;
                 unset($array);
             }
 
-            
+
             /*
              * ESTE BLOCO MONTA UMA SEQUENCIAS 
              * DE POSSIBILIDADES DE ANOS PARA OS VEICULOS          
              */
-            
+
             $anos = array();
             $y = (int) date("Y");
             $y_tmp = null;
@@ -338,18 +340,27 @@ Class Veiculos extends Controller {
                 }
             }
 
-            $this->assign("anos", $anos);
+
+            $anos = $anos;
 
             if ($_POST) {
 
-
+//                foreach ($_POST as $n => $v) {
+//                    $_POST[$n] = utf8_decode($v);
+//                    $_POST[$n] = utf8_encode($_POST[$n]);
+//                    
+//                    $n = $v;
+//                }
+                $postdata = $_POST;
                 foreach ($_POST as $n => $v) {
                     $_POST[$n] = utf8_decode($v);
                     $_POST[$n] = utf8_encode($_POST[$n]);
-                    $this->assign($n, $v);
+                    $postdata[$n] = $v;
+                    
                 }
-
-                $preco = $_POST["preco"];
+                $preco = $postdata["preco"];
+                var_dump($postdata["PRECO"]);
+                die();
                 $nome = $_POST["nome"];
                 $categoria = $_POST["categoria"];
                 $linha_1 = $_POST["linha_1"];
@@ -440,7 +451,7 @@ Class Veiculos extends Controller {
         if ($this->permitir_acesso($_SESSION["ID"], $_SESSION["SENHA"], $papeis)) {
 
             if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-                
+
                 /*
                  * PEGA O PARAMETRO GET QUE TEM O CODPRODUTO
                  */
@@ -451,7 +462,7 @@ Class Veiculos extends Controller {
                  * CARREGA A VARIAVEL GLOBA DO REQUEST
                  */
                 $foto = $_FILES["myfile"];
-                
+
                 /*
                  * DA NOME AO DIRETORIO
                  */
@@ -461,44 +472,44 @@ Class Veiculos extends Controller {
                  * DA NOME AO CAMINHO FISICO DO DIRETORIO
                  */
                 $path = str_replace("\\", "/", DIR) . "/web-files/upload/" . $folder;
-                
+
                 /*
                  * SE O DIRETORIO NAO EXISTIR CRIAREMOS
                  */
-                if(!is_dir($path)){
+                if (!is_dir($path)) {
                     mkdir($path, 0777, true);
                 }
-                
+
                 /*
                  * DEFINE A EXTENSAO A SEU UPADA JUNTAMENTO COM O NOME NOVO DO ARQUIVO
-                 */                
+                 */
                 $extensao = strtolower(pathinfo($foto["name"], PATHINFO_EXTENSION));
                 $filename = $this->getPrimarykey() . "." . $extensao;
-                
+
                 /*
                  * CHAMA A CLASSE COM OS METODOS PARA SALVAR A IMAGEM
                  */
                 $model = new Produtos_Model();
-                                
+
                 /*
                  * CRIA CHAVE UNICA PARA A FOTO
                  */
                 $dados["CODFOTO"] = $this->getPrimarykey();
-                
+
                 /*
                  * CHECA O NUMERO DE IMAGENS LIGADAS AO MESMO PRODUTO
                  */
                 $quantas_fotos = $model->qnts_fotos($codproduto);
-                
+
                 /*
                  * SE EXISTE APENAS UMA FOTO ELE DESTACA COMO PRIMEIRO
                  */
-                if((int)$quantas_fotos == 0){
+                if ((int) $quantas_fotos == 0) {
                     $dados['DESTAQUE'] = 1;
                 } else {
                     $dados['DESTAQUE'] = 0;
                 }
-                
+
                 /*
                  * CRIA ARRAY COM OS DADOS DA FOTO PARA SALVAR NO BANCO DE DADOS
                  */
@@ -510,19 +521,19 @@ Class Veiculos extends Controller {
                 $dados["STATUS"] = 1;
 
                 $count = $quantas_fotos;
-                $dados["ORDEM"] = ($count+1);
+                $dados["ORDEM"] = ($count + 1);
 
                 /*
                  * SALVANDO A FOTO
                  */
                 $model->insert_fotos($dados);
-                
+
                 /*
                  * CRIA UM CHAVEAMENTO 1 POR 1 ENTRE A FOTO E O PRODUTO
                  */
                 $fotos_rel_produtos["CODFOTO"] = $dados["CODFOTO"];
                 $fotos_rel_produtos["CODPRODUTO"] = $codproduto;
-                
+
                 /*
                  * SALVA O RELACIONAMENTO EM BANCO DE DADOS
                  */
@@ -532,23 +543,23 @@ Class Veiculos extends Controller {
                  * CARREGA A DATA FORMATADA QUE A FOTO FOI SALVA QUE IRA RETORNAR PELO RESPONSE
                  */
                 $dados['DATA'] = $this->getTimestampDateformat();
-                
+
                 /*
                  * MONTA O CAMINHO DO UPLOAD PARA A FUNCAO PHP
                  */
                 $caminho_imagem = $path . "\\" . $filename;
-                
+
                 /*
                  * FAZ UPLOAD DA IMAGEM
                  */
                 move_uploaded_file($foto["tmp_name"], $caminho_imagem);
-                
+
                 /*
                  * RETORNA PELO RESPONSE AJAX OS DADOS SALVOS NO PADRAO JSON
                  */
                 header('Content-Type: application/json');
                 echo json_encode($dados);
-                
+
                 /*
                  * REALIZA O CROP DA FOTO
                  */
@@ -557,6 +568,7 @@ Class Veiculos extends Controller {
             }
         }
     }
+
 //
 //    public function crop() {
 //        
@@ -692,7 +704,7 @@ Class Veiculos extends Controller {
                     $km = str_replace(",", "", $km);
                     $km = str_replace(".", "", $km);
 
-                    if ($model->existe_url_amigavel($url_amigavel)) {
+                    if ($model->existe_url_amigavel($url_amigavel) > 1) {
                         $check = true;
                         $i = 1;
                         while ($check) {

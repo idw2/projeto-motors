@@ -1,58 +1,48 @@
 <?php
-
+$controller = new Veiculos();
 $model = new Model();
-
-$fotos = rearrange_files($_POST['fotos']);
-unset($_POST['fotos']);
-
-$codproduto = strtoupper(md5(uniqid(rand(), true)));
-
-//=========================
-// FOTOS
-//=========================
-
-$upload_path = '/home/dlab34/auto.designlab.com.br/web-files' . DS . 'upload' . DS . date("Y") . DS . date("m") . DS;
-$upload_path_base = '/web-files' . DS . 'upload' . DS . date("Y") . DS . date("m") . DS;
-
-if (!is_dir($upload_path)) {
-    mkdir($upload_path, 0777, true);
-}
-
-foreach ($fotos as $k => $foto) {
-
-    $ext = pathinfo($foto['name'], PATHINFO_EXTENSION);
-    $filename = crc32($foto['name'] . time()) . '.' . $ext;
-    $filename_920 = crc32($foto['name'] . time()) . '_920x620.' . $ext;
-    $filename_640 = crc32($foto['name'] . time()) . '_640x480.' . $ext;
-    $filename_320 = crc32($foto['name'] . time()) . '_320x240.' . $ext;
-
-    $fotos_info[$k]['filename'] = $foto['name'];
-    $fotos_info[$k]['filepath'] = $upload_path_base . $filename;
-    $fotos_info[$k]['filepath_920'] = $upload_path_base . $filename_920;
-    $fotos_info[$k]['filepath_640'] = $upload_path_base . $filename_640;
-    $fotos_info[$k]['filepath_320'] = $upload_path_base . $filename_320;
-
-    $img = new abeautifulsite\SimpleImage($foto['tmp_name']);
-
-    $img->save($upload_path . $filename);
-    $img->adaptive_resize(920, 620)->save($upload_path . $filename_920);
-    $img->adaptive_resize(640, 480)->save($upload_path . $filename_640);
-    $img->adaptive_resize(320, 240)->save($upload_path . $filename_320);
-}
-
-$model->add_fotos($fotos_info);
-
-die;
 
 //=========================
 // CADASTRO
 //=========================
+Class Querys extends Model {
 
+    public function insert_fotos(Array $dados) {
+        $this->_tabela = "fotos";
+        $this->insert($dados);   
+    }
+    
+    public function insert_fotos_rel_produtos(Array $dados) {
+        $this->_tabela = "fotos_rel_produtos";
+        return $this->insert($dados);
+    }
+
+    public function getPrimarykey() {
+        return strtoupper(md5(uniqid(rand(), true)));
+    }
+
+    public function get_produto($key) {
+        $this->_tabela = "produtos";
+        $where = "URL_AMIGAVEL='{$key}'";
+        return $this->read($where);
+    }
+    
+     public function qnts_fotos($url_amigavel) {
+        $query = $this->db->prepare("SELECT * FROM `fotos`
+    INNER JOIN `fotos_rel_produtos` ON `fotos_rel_produtos`.CODFOTO=`fotos`.CODFOTO
+    INNER JOIN `produtos` ON `fotos_rel_produtos`.CODPRODUTO=`produtos`.CODPRODUTO
+    WHERE URL_AMIGAVEL=:URL_AMIGAVEL");
+        $query->bindParam(":URL_AMIGAVEL", $url_amigavel, PDO::PARAM_STR, 70);
+        $query->execute();
+        return $query->rowCount();
+    }
+
+}
 $preco = $_POST["preco"];
 $nome = $_POST["veiculo"];
 $categoria = $_POST["categoria"];
 $linha_1 = $_POST["cambio"];
-$linha_2 = $_POST["linha_2"];
+$linha_2 = $_POST["linha_2"]; 
 $linha_3 = $_POST["linha_3"];
 
 $ano = $_POST["ano"];
@@ -63,7 +53,7 @@ $portas = $_POST["portas"];
 $final_placa = $_POST["placa"];
 $carroceria = $_POST["carroceria"];
 $especificacoes = $_POST["adicionais"];
-
+$codfotos = $_POST["CODFOTO"];
 $url_amigavel = slug($nome);
 
 if ($model->existe_url_amigavel($url_amigavel)) {
@@ -98,7 +88,15 @@ $dados["PORTAS"] = $portas;
 $dados["FINAL_PLACA"] = utf8_encode($final_placa);
 $dados["CARROCERIA"] = utf8_encode($carroceria);
 $dados["ESPECIFICACOES"] = trim(stripslashes($especificacoes));
+$codproduto = $controller->cadastrar_mobile($dados);
 
-if ($model->insert_produto($dados)) {
-    echo Json::encode(array('status' => 'success'));
+foreach($codfotos as $codfoto){
+$fotos_rel_produtos["CODPRODUTO"] = $codproduto;
+$fotos_rel_produtos["CODFOTO"] = $codfoto;
+$model->insert_fotos_rel_produtos($fotos_rel_produtos);
 }
+
+if ($codproduto) {
+                $data['url_amigavel'] = $url_amigavel;
+                echo json_encode($data);
+}else{ $data['erro'] = "erro";}

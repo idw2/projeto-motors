@@ -19,12 +19,12 @@
             </a>
             <ul class="dropdown-menu dropdown-user">
                 {if strlen($session_codusuario) != 32}
-                    <li><a href="/{$language}/admin/meus-dados/{strtolower($session_codconta)}"><i class="fa fa-user fa-fw"></i> Meus Dados</a></li>
+                    <li><a href="/{$language}/admin/meus-dados/{strtolower($session_codconta)}"><i class="fa fa-user fa-fw"></i> My Data</a></li>
                     {/if}      
-                <li><a href="/{$language}/admin/alterar-senha"><i class="fa fa-key fa-fw"></i> Alterar Senha</a></li>
+                <li><a href="/{$language}/admin/alterar-senha"><i class="fa fa-key fa-fw"></i> Change Password</a></li>
                     {*                <li><a href="/{$language}/html/configuracao"><i class="fa fa-gear fa-fw"></i> Configurações</a></li>*}
                 <li class="divider"></li>
-                <li><a href="/{$language}/admin/logout"><i class="fa fa-sign-out fa-fw"></i> Sair</a></li>
+                <li><a href="/{$language}/admin/logout"><i class="fa fa-sign-out fa-fw"></i> Sign Out</a></li>
             </ul>
             <!-- /.dropdown-user -->
         </li>
@@ -44,16 +44,16 @@
 
                 {if $session_papel == "ADMINISTRADOR"}
                     <li {if $page eq "contas"} class="active"{/if}>
-                        <a href="/{$language}/contas"><i class="fa fa-users fa-fw"></i> Lista de Contas</a>
+                        <a href="/{$language}/contas"><i class="fa fa-users fa-fw"></i> Account List</a>
                     </li>
                 {/if}
 
                 {if strlen($session_codusuario) != 32}
-                    <li {if $page eq "usuarios_lista"} class="active"{/if}><a href="/{$language}/usuarios"><i class="fa fa-user fa-fw"></i> Lista de Usuários</a></li>
+                    <li {if $page eq "usuarios_lista"} class="active"{/if}><a href="/{$language}/usuarios"><i class="fa fa-user fa-fw"></i> Member List</a></li>
                 {/if}
                 
                 <li {if $page eq "veiculos_lista"} class="active"{/if}>
-                    <a href="/{$language}/veiculos/veiculos-lista"><i class="fa fa-automobile fa-fw"></i> Lista de Veículos</a>                    
+                    <a href="/{$language}/veiculos/veiculos-lista"><i class="fa fa-automobile fa-fw"></i> Vehicle List</a>                    
                 </li>
 
                 {*<li {if $page eq "empresa"} class="active"{/if}>

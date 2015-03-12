@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: mysql.designlab.com.br
--- Tempo de Geração: Mar 11, 2015 as 08:21 AM
+-- Tempo de Geração: Mar 12, 2015 as 03:49 PM
 -- Versão do Servidor: 5.1.56
 -- Versão do PHP: 5.4.37
 
@@ -45,8 +45,7 @@ CREATE TABLE IF NOT EXISTS `conta` (
 --
 
 INSERT INTO `conta` (`CODCONTA`, `DTA`, `NOME_RAZAO_SOCIAL`, `TIPO_CONTA`, `ID`, `SITE`, `EMAIL`, `SENHA`, `LEMBRETE`, `NASCIMENTO_FUNDACAO`, `CPF_CNPJ`, `PAPEL`, `SEXO`, `STATUS`, `SUSPENSO`, `BLOQUEADO`, `OWNER`) VALUES
-('8AD75CB3CBAB9F97652F34423209818F', '2015-01-06 11:32:50', 'IDW2', 'pj', 'IDW2', 'http://www.idw2.com.br', 'admin@idw2.com.br', '9241E1A4CAD0A7D0BDD5E24DED3B3B8E', 'dl123', '2009-01-05', '00000000000000', 'ADMINISTRADOR;', '', '1', '0', '0', '71F8F8E9B09606EE49C65E9CC20F5927');
-
+('8AD75CB3CBAB9F97652F34423209818F', '2015-01-06 11:32:50', 'Minha Empres', 'pj', 'D1', 'http://www.meusite.com.br', 'meu@email.com.br', '9241E1A4CAD0A7D0BDD5E24DED3B3B8E', 'minha senha e: dl123', '2009-01-05', '13799207000110', 'ADMINISTRADOR;', '', '1', '0', '0', '71F8F8E9B09606EE49C65E9CC20F5927');
 -- --------------------------------------------------------
 
 --
@@ -60,6 +59,14 @@ CREATE TABLE IF NOT EXISTS `conta_rel_enderecos` (
   PRIMARY KEY (`CODCONTA`,`CODENDERECO`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Extraindo dados da tabela `conta_rel_enderecos`
+--
+
+INSERT INTO `conta_rel_enderecos` (`DTA`, `CODCONTA`, `CODENDERECO`) VALUES
+('2015-01-14 06:29:16', '8AD75CB3CBAB9F97652F34423209818F', '8AE1BB92D071ED06D9A6A9B10039C765'),
+('2015-03-07 13:31:26', 'BF343F27A751F42BAA982A08B0177864', 'BEFC836D271A5B4CF2F9A32362FE5E2A');
+
 -- --------------------------------------------------------
 
 --
@@ -72,6 +79,10 @@ CREATE TABLE IF NOT EXISTS `conta_rel_telefones` (
   `CODTELEFONE` char(32) NOT NULL,
   PRIMARY KEY (`CODCONTA`,`CODTELEFONE`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Extraindo dados da tabela `conta_rel_telefones`
+--
 
 
 -- --------------------------------------------------------
@@ -90,7 +101,6 @@ CREATE TABLE IF NOT EXISTS `conta_rel_usuarios` (
 --
 -- Extraindo dados da tabela `conta_rel_usuarios`
 --
-
 
 -- --------------------------------------------------------
 
@@ -125,6 +135,10 @@ CREATE TABLE IF NOT EXISTS `dados_relevantes` (
   PRIMARY KEY (`CODDADOSRELEVANTES`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Extraindo dados da tabela `dados_relevantes`
+--
+
 -- --------------------------------------------------------
 
 --
@@ -145,6 +159,9 @@ CREATE TABLE IF NOT EXISTS `enderecos` (
   PRIMARY KEY (`CODENDERECO`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Extraindo dados da tabela `enderecos`
+--
 
 -- --------------------------------------------------------
 
@@ -1245,6 +1262,10 @@ CREATE TABLE IF NOT EXISTS `fotos` (
   PRIMARY KEY (`CODFOTO`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+--
+-- Extraindo dados da tabela `fotos`
+--
+
 -- --------------------------------------------------------
 
 --
@@ -1257,6 +1278,10 @@ CREATE TABLE IF NOT EXISTS `fotos_rel_produtos` (
   `DTA` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`CODFOTO`,`CODPRODUTO`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Extraindo dados da tabela `fotos_rel_produtos`
+--
 
 -- --------------------------------------------------------
 
@@ -1271,6 +1296,9 @@ CREATE TABLE IF NOT EXISTS `html` (
   `CONTEUDO` blob
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
+--
+-- Extraindo dados da tabela `html`
+--
 
 -- --------------------------------------------------------
 
@@ -1307,6 +1335,10 @@ CREATE TABLE IF NOT EXISTS `produtos` (
   PRIMARY KEY (`CODPRODUTO`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
+--
+-- Extraindo dados da tabela `produtos`
+--
+
 -- --------------------------------------------------------
 
 --
@@ -1323,6 +1355,9 @@ CREATE TABLE IF NOT EXISTS `telefones` (
   PRIMARY KEY (`CODTELEFONE`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Extraindo dados da tabela `telefones`
+--
 
 -- --------------------------------------------------------
 
@@ -1334,12 +1369,13 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
   `CODUSUARIO` char(32) NOT NULL DEFAULT '',
   `DTA` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `NOME` varchar(70) DEFAULT NULL,
-  `USERNAME` varchar(70) DEFAULT NULL,
+  `USERNAME` varchar(15) DEFAULT NULL,
   `SENHA` char(32) NOT NULL,
+  `LEMBRETE` varchar(255) DEFAULT NULL,
+  `STATUS` char(1) DEFAULT NULL,
   PRIMARY KEY (`CODUSUARIO`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Extraindo dados da tabela `usuarios`
 --
-

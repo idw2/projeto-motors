@@ -26,23 +26,35 @@
                                 <br/>
 
                                 {if $erro eq ""}
-                                    <div class="alert alert-success" role="alert"><strong>Heads Up: </strong>Fill in all required fields!</div>
+                                    <div class="alert alert-success" role="alert"><strong>Heads Up: </strong>Username required!</div>
                                 {else}
                                     <div class="alert alert-danger" role="alert"><strong>Heads Up: </strong>{$erro}</div>
                                 {/if}
 
-                                <br/>    
+                                <br/> 
+
+
+
+
 
                                 <h4>Username:</h4>
-                                <p><input type="text" class="form-control" id="nome" name="nome" maxlength="15" value="{$post_nome}" placeholder="Username"/></p>
-                                <p><input type="password" class="form-control" id="passwd" name="passwd" maxlength="50" value="" placeholder="Password"/></p>
-                                <p><input type="password" class="form-control" id="passwd2" name="passwd2" maxlength="50" value=""  placeholder="Repeat passwor"/></p>
-                                <h4>Safety Reminder:</h4>
-                                <p><input type="text" class="form-control" id="lembrete" name="lembrete" maxlength="30" value="{$post_lembrete}" placeholder="Password reminder"/></p>
-                                <hr/>
+                                <div><input type="text" class="form-control" id="nome" name="nome" maxlength="15" value="{$post_nome}" placeholder="Username"/></div>
 
-                                <p><button type="submit" class="btn btn-primary" name="enviar">ENVIAR</button></p>
 
+                                <h4>
+                                    <input type="checkbox" name="updatePassword" id="updatePassword" {if $updatePassword eq "on" } checked="true" {/if} /> I wish to register a new password.
+                                </h4>
+                                
+                                <div class="updatePassword {if isset($updatePassword) } {if isset($updatePassword) != "on" } hide {/if} {else} hide {/if} ">
+                                    <hr/>
+                                    <div><input type="password" class="form-control" id="passwd" name="passwd" maxlength="50" value="" placeholder="Password"/></div>
+                                    <br>
+                                    <div><input type="password" class="form-control" id="passwd2" name="passwd2" maxlength="50" value=""  placeholder="Repeat passwor"/></div>
+                                    <h4>Safety Reminder:</h4>
+                                    <div><input type="text" class="form-control" id="lembrete" name="lembrete" maxlength="30" value="{$post_lembrete}" placeholder="Password reminder"/></div>
+                                    <hr/>
+                                </div>
+                                <div>{include file="btn_send.tpl"}</div>
                             </form>
                         </div>
                     </div>

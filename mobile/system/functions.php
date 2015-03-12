@@ -82,8 +82,9 @@ function slug($string, $separator = '-') {
         if ($size) {
             foreach ($files as $filename) {
                 if (file_exists($dir . $filename . ".php")) {
-                    echo $dir . $filename . ".php<br/>";
-                    #require_once( $dir . $filename . ".php" );
+//                    echo $dir . $filename . ".php<br>";
+                    
+                    require_once( $dir . $filename . ".php" );
                 } 
             }
         }

@@ -170,7 +170,7 @@
                                     <hr/>
                                 </div>
 
-                                <p><button type="submit" class="btn btn-primary" name="enviar">ENVIAR</button></p>
+                                <p><div>{include file="btn_send.tpl"}</div></p>
 
                             </form>
                         </div>

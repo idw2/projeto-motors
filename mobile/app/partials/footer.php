@@ -5,7 +5,7 @@
 
 </div>
 
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="<?php echo asset('js/jquery-1.11.1.min.js'); ?>"></script>
 <script src="<?php echo asset('js/uikit.min.js'); ?>"></script>
 
 <script src="<?php echo asset('js/components/upload.min.js'); ?>"></script>

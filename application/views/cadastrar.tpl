@@ -19,62 +19,23 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-body">
-                    {*<div class="row">
-                    <div class="col-lg-6">
-                    {if $erro eq ""}
-                    <div class="alert alert-success" role="alert"><strong>Atenção: </strong>Preencher todos os campos!</div>
-                    {else}
-                    {if $sucesso eq "FALSE"}
-                    <div class="alert alert-danger" role="alert"><strong>Atenção: </strong>{$erro}</div>
-                    {else}
-                    <div class="alert alert-success" role="alert">{$erro}</div>	
-                    {/if}
 
-                    {/if}
-                    </div>
-                    <div class="col-lg-6">
-                    <a href="/{$language}/veiculos/veiculos-lista" class="btn btn-default navbar-btn"><i class="fa fa-reply">&nbsp</i> Voltar</a>
-                    </div>
-                    </div>
-                    <div class="row">
-                    <div class="col-lg-6">
-                    <h4>Selecione os documentos</h4>  
-                    <b>Extensões permitidas:</b> .jpg, .png, .gif, .bmp<br>  
-                    <div id="mulitplefileuploader" class="fileuploader">Upload</div>
-                    <div id="status"></div>
-                    <input type="hidden" name="codproduto" id="codproduto" value="{$codproduto}"/>
-                    </div>
-                    <div class="col-lg-6">
-                    <div id="responseHTML" style="margin-top: 16px;">
-                    <div class="panel panel-default responseRemove">
-                    <div class="panel-heading">
-                    ATENÇÃO
-                    </div>
-                    <table class="table">
-                    <thead>
-                    <th>Nada na lista!</th>
-                    </thead>
-                    </table>
-                    </div>
-                    </div>
-                    </div>
-                    </div>*}
                     <div class="row">
                         <div class="col-lg-12">
 
                             <form method="post">
-<div class="row">
-                    <div class="col col-lg-6 col-md-6">
-                        <h4 class="panel-heading x-label">Veículo</h4>
-                        <input type="text" class="form-control" id="nome" name="nome" placeholder="Nome" />	
-                        <br/>
-                    </div>    
-                    <div class="col col-lg-6 col-md-6">
-                        <h4 class="panel-heading x-label">Preço</h4>
-                        <input type="text" class="form-control" id="preco" name="preco" placeholder="Preço" onkeypress="formataValor(event, this, 12);" onkeydown="backspaceFormataValor(event, this)"/>
-                        <br/>
-                    </div>
-                </div>   
+                                <div class="row">
+                                    <div class="col col-lg-6 col-md-6">
+                                        <h4 class="panel-heading x-label">Veículo</h4>
+                                        <input type="text" class="form-control" id="nome" name="nome" placeholder="Nome" />	
+                                        <br/>
+                                    </div>    
+                                    <div class="col col-lg-6 col-md-6">
+                                        <h4 class="panel-heading x-label">Preço</h4>
+                                        <input type="text" class="form-control" id="preco" name="preco" placeholder="Preço" onkeypress="formataValor(event, this, 12);" onkeydown="backspaceFormataValor(event, this)"/>
+                                        <br/>
+                                    </div>
+                                </div>   
                                 <div class="row">
                                     <div class="col col-lg-6 col-md-6">
                                         <h4 class="panel-heading x-label">Modelo</h4>
@@ -170,7 +131,7 @@
                                 </div> 
                                 <div class="row">
                                     <div class="col col-lg-12 col-md-12">  
-                                        <button type="submit" class="btn btn-primary btn-lg" role="button">Enviar</button>
+                                        {include file="btn_send.tpl"}
                                         <br/>
                                     </div>    
                                 </div> 
@@ -344,7 +305,7 @@ ATENÇÃO
 <script>
     $("select").css("height", "54px");
 
-    $(document).ready(function () {
+    $(document).ready(function() {
 
         var settings = {
             url: "/pt/veiculos/upload/" + $("#codproduto").val(),
@@ -352,7 +313,7 @@ ATENÇÃO
             allowedTypes: "jpg,png,gif,bmp",
             fileName: "myfile",
             multiple: true,
-            onSuccess: function (files, data, xhr)
+            onSuccess: function(files, data, xhr)
             {
 
                 var str = '<div class="panel panel-default myResponse" id="' + data['CODFOTO'] + '">'
@@ -387,7 +348,7 @@ ATENÇÃO
                 $("#status").html("<font color='green'>Upload realizado com sucesso!</font>");
 
             },
-            onError: function (files, status, errMsg)
+            onError: function(files, status, errMsg)
             {
                 $("#status").html("<font color='red'>Falha ao realizar o upload!</font>");
             }
@@ -404,7 +365,7 @@ ATENÇÃO
                 type: 'post',
                 data: null,
                 url: url,
-                success: function (data) {
+                success: function(data) {
                     $("#" + data["CODARQUIVO"]).remove();
                     if (!$(".myResponse").hasClass("myResponse")) {
                         var str = '<div class="panel panel-default responseRemove"><div class="panel-heading">ATENÇÃO</div><table class="table"><thead><th>Nada na lista!</th></thead></table></div>';

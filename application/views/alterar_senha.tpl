@@ -22,7 +22,7 @@
                         <div class="col-lg-6">
                             <form class="navbar-form navbar-left" style="width: 100%" action="/{$language}/admin/alterar_senha" method="post">
 
-                                 {if $erro eq ""}
+                                {if $erro eq ""}
                                     <div class="alert alert-success" role="alert"><strong>Heads Up: </strong>Fill in all required fields!</div>
                                 {else}
                                     <div class="alert alert-danger" role="alert"><strong>Heads Up: </strong>{$erro}</div>
@@ -45,7 +45,7 @@
                                 </div>	
                                 <br/>
                                 <div class="input-group input-group-lg">
-                                    <button type="submit" class="btn btn-primary btn-lg" role="button">Entrar</button>
+                                    {include file="btn_send.tpl"}
                                 </div>
 
                             </form>

@@ -29,104 +29,106 @@ Class Admin extends Controller {
         $sucesso = "FALSE";
 
         $model = new Conta_Model();
-
         $login = new Login_Model();
 
-//        if ($model->confere_senha($_SESSION["EMAIL"], $_SESSION["SENHA"])) {
-//            echo "<script>window.location='/" . LANGUAGE . "/admin/welcome'</script>";
-//            return false;
-//        }
+        /*
+         * CASO EXISTE USUARIO NA SESSAO REDIRECT PAGINA INICIAL WELCOME
+         */
+        if ($model->confere_senha($_SESSION["EMAIL"], $_SESSION["SENHA"])) {
+            echo "<script>window.location='/" . LANGUAGE . "/admin/welcome'</script>";
+            return false;
+        }
 
         if ($_POST) {
 
 
             $email_cpf_id_username = $_POST["email_or_username"];
-            $senha = $this->senhaMd5($_POST["senha"]);
+            $email = $_POST["email_or_username"];
+            $senha = $_POST["senha"];
+            $erro = "";
 
-            if ($email == "" && $senha == "") {
-                $erro = "* Fill out all fields!";
+            /*
+             * VERIFICANDO SE PREENCHEU PELO MENOS UM DOS CAMPOS
+             */
+            if ($email_cpf_id_username == "" && $senha == "") {
+                $erro = "* E-mail or username required!";
+            } else {
 
-                #!preg_match("/^[a-z0-9_-]{3,15}$/", $dados_usuario["USERNAME"]);
-            } /* else if (!preg_match('/^[^0-9][a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[@][a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{2,4}$/', $email)) {
-              $erro = "E-mail inválido!";
-              } else */#{
+                /*
+                 * VERIFICANDO SE EXISTE MESMO O USUARIO OU CONTA
+                 */
+                $existe_conta_rel_usuario = $login->existe_conta_rel_usuario($email_cpf_id_username);
+                ((bool)$model->existe_conta($email)) ? $existe_conta = TRUE : $existe_conta = FALSE  ;
 
-            $existe_conta_rel_usuario = $login->existe_conta_rel_usuario($email_cpf_id_username);
+                /*
+                 * CASO EXISTA ALGUMA CONTA OU USUARIO
+                 */
+                if ($existe_conta_rel_usuario && $erro == "") {
+ 
+                    /*
+                     * CRIA UM OBJETO USUARIO PARA SALVAR NA SESSAO
+                     */
+                    $usuario = $login->get_dados_conta_rel_usuario($email_cpf_id_username);
+                   
+                    /*
+                     * VERIFICA SE E O PRIMEIRO ACESSO DO USUARIO
+                     */
+                    if (strlen($usuario->CODUSUARIO) == 32 && $usuario->PASSWORD == "" && !$existe_conta) {
+                        foreach ($usuario as $name => $value) {
+                            if ($name == "PAPEL") {
+                                $_SESSION["N_PAPEL"] = "USUARIO";
+                                $value = "USUARIO";
+                            }
+                            if ($name == "CPF_CNPJ") {
+                                ($conta->TIPO_CONTA == "pf") ? $_SESSION["CPF"] = $this->formataCpf($conta->CPF_CNPJ) : $_SESSION["CNPJ"] = $this->formataCnpj($conta->CPF_CNPJ);
+                            }
+                            $_SESSION[$name] = $value;
+                        }
+                        echo "<script>window.location='/" . LANGUAGE . "/admin/primeiro-acesso/'</script>";
+                        return false;
+                    }
+                    /*
+                     * CASO NAO SEJA O PRIMEIRO ACESSO VERIFICA SE O TIPO LOGADO E CONTA OU USUARIO
+                     * NESTE CASO SE ELE FOR USUARIO ENTRA AQUI
+                     */ else if (strlen($usuario->CODUSUARIO) == 32 && !$existe_conta) {
 
-            if ($existe_conta_rel_usuario) {
-
-                $usuario = $login->get_dados_conta_rel_usuario($email_cpf_id_username);
-
-                if (strlen($usuario->CODUSUARIO) == 32 && $usuario->PASSWORD == "") {
-                    foreach ($usuario as $name => $value) {
-                        if ($name == "PAPEL") {
-                            $_SESSION["N_PAPEL"] = $value;
-                            $loop = explode(";", $value);
-                            $elimina = (sizeof($loop) - 1 );
-                            unset($loop[$elimina]);
-                            if (in_array('ADMINISTRADOR', $loop)) {
-                                $value = "ADMINISTRADOR";
-                            } else if (in_array('CLIENTE', $loop)) {
-                                $value = "CLIENTE";
-                            } else if (in_array('PUBLICADOR', $loop)) {
-                                $value = "PUBLICADOR";
+                        if ($senha == "") {
+                            $erro = "* Password required!";
+                        } else {
+                            /*
+                             * CONFERE A SENHA
+                             */
+                            if ($this->senhaMd5($senha) == $usuario->PASSWORD) {
+                                /*
+                                 * CONFERE STATUS
+                                 */
+                                if ((bool) $usuario->STT) {
+                                    foreach ($usuario as $name => $value) {
+                                        if ($name == "PAPEL") {
+                                            $_SESSION["N_PAPEL"] = "USUARIO";
+                                            $value = "USUARIO";
+                                        }
+                                        if ($name == "CPF_CNPJ") {
+                                            ($conta->TIPO_CONTA == "pf") ? $_SESSION["CPF"] = $this->formataCpf($conta->CPF_CNPJ) : $_SESSION["CNPJ"] = $this->formataCnpj($conta->CPF_CNPJ);
+                                        }
+                                        $_SESSION[$name] = $value;
+                                    }
+                                    echo "<script>window.location='/" . LANGUAGE . "/admin/welcome'</script>";
+                                    return false;
+                                } else {
+                                    $erro = "* Access Denied, contact the administrator!";
+                                }
+                            } else {
+                                $erro = "* Passwords do not match!";
                             }
                         }
-                        if ($name == "CPF_CNPJ") {
-                            ($conta->TIPO_CONTA == "pf") ? $_SESSION["CPF"] = $this->formataCpf($conta->CPF_CNPJ) : $_SESSION["CNPJ"] = $this->formataCnpj($conta->CPF_CNPJ);
-                        }
-                        $_SESSION[$name] = $value;
-                    }
-                    echo "<script>window.location='/" . LANGUAGE . "/admin/primeiro-acesso/'</script>";
-                    return false;
-                } else if (strlen($usuario->CODUSUARIO) == 32) {
-
-                    if($senha != $usuario->PASSWORD){
-                        echo aqui;
-                    }
-                }
-            }
-
-            die();
-
-            if ($model->existe_conta($email)) {
-
-                $conta = $model->get_dados_conta($email);
-
-                if ($conta->SENHA == "") {
-
-                    foreach ($conta as $name => $value) {
-                        if ($name == "PAPEL") {
-                            $_SESSION["N_PAPEL"] = $value;
-                            $loop = explode(";", $value);
-                            $elimina = (sizeof($loop) - 1 );
-                            unset($loop[$elimina]);
-                            if (in_array('ADMINISTRADOR', $loop)) {
-                                $value = "ADMINISTRADOR";
-                            } else if (in_array('CLIENTE', $loop)) {
-                                $value = "CLIENTE";
-                            } else if (in_array('PUBLICADOR', $loop)) {
-                                $value = "PUBLICADOR";
-                            }
-                        }
-                        if ($name == "CPF_CNPJ") {
-                            ($conta->TIPO_CONTA == "pf") ? $_SESSION["CPF"] = $this->formataCpf($conta->CPF_CNPJ) : $_SESSION["CNPJ"] = $this->formataCnpj($conta->CPF_CNPJ);
-                        }
-                        $_SESSION[$name] = $value;
-                    }
-
-                    echo "<script>window.location='/" . LANGUAGE . "/admin/primeiro-acesso/'</script>";
-                    return false;
-                } else {
-                    if ($senha == "") {
-                        $erro = "Senha requerida!";
                     } else {
+                        
+                        if ((bool)$existe_conta) {
 
-                        $conta = $model->get_dados_conta($email);
+                            $conta = $model->get_dados_conta($email);
 
-                        $senha = $this->senhaMd5($senha);
-                        if ($model->confere_senha($email, $senha)) {
-                            if ($model->testa_status($email, $senha)) {
+                            if ($conta->SENHA == "") {
 
                                 foreach ($conta as $name => $value) {
                                     if ($name == "PAPEL") {
@@ -147,20 +149,57 @@ Class Admin extends Controller {
                                     }
                                     $_SESSION[$name] = $value;
                                 }
-                                echo "<script>window.location='/" . LANGUAGE . "/admin/welcome'</script>";
+
+                                echo "<script>window.location='/" . LANGUAGE . "/admin/primeiro-acesso/'</script>";
                                 return false;
                             } else {
-                                $erro = "Acesso negado, entre em contato com o administrador!";
+                                if ($senha == "") {
+                                    $erro = "* Password required!";
+                                } else {
+
+                                    $conta = $model->get_dados_conta($email);
+
+                                    $senha = $this->senhaMd5($senha);
+                                    if ($model->confere_senha($email, $senha)) {
+                                        if ($model->testa_status($email, $senha)) {
+
+                                            foreach ($conta as $name => $value) {
+                                                if ($name == "PAPEL") {
+                                                    $_SESSION["N_PAPEL"] = $value;
+                                                    $loop = explode(";", $value);
+                                                    $elimina = (sizeof($loop) - 1 );
+                                                    unset($loop[$elimina]);
+                                                    if (in_array('ADMINISTRADOR', $loop)) {
+                                                        $value = "ADMINISTRADOR";
+                                                    } else if (in_array('CLIENTE', $loop)) {
+                                                        $value = "CLIENTE";
+                                                    } else if (in_array('PUBLICADOR', $loop)) {
+                                                        $value = "PUBLICADOR";
+                                                    }
+                                                }
+                                                if ($name == "CPF_CNPJ") {
+                                                    ($conta->TIPO_CONTA == "pf") ? $_SESSION["CPF"] = $this->formataCpf($conta->CPF_CNPJ) : $_SESSION["CNPJ"] = $this->formataCnpj($conta->CPF_CNPJ);
+                                                }
+                                                $_SESSION[$name] = $value;
+                                            }
+                                            echo "<script>window.location='/" . LANGUAGE . "/admin/welcome'</script>";
+                                            return false;
+                                        } else {
+                                            $erro = "* Access Denied, contact the administrator!";
+                                        }
+                                    } else {
+                                        $erro = "* Passwords do not match!";
+                                    }
+                                }
                             }
                         } else {
-                            $erro = "Senha não confere!";
+                            $erro = "* Email missing!";
                         }
                     }
+                } else {
+                    $erro = "* Account username or non-existent!";
                 }
-            } else {
-                $erro = "E-mail inexistente!";
             }
-            #}
 
             $this->assign("language", LANGUAGE);
             $this->assign("erro", $erro);

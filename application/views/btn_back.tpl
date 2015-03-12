@@ -1,0 +1,1 @@
+<a href="{$link_btn_voltar}" data-toggle="tooltip"  title="Back" style="color:#d9534f; font-size: 30px;"><i class="fa fa-reply">&nbsp</i></a>

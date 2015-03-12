@@ -56,11 +56,11 @@ Class Usuarios extends Controller {
 
                 if (!preg_match("/^[a-z0-9_-]{3,15}$/", $dados_usuario["USERNAME"])) {
                     $erro = "* The user field can not have invalid characters!";
-                } else if ($dados_usuario["SENHA"] == "") {
+                }/*else if ($dados_usuario["SENHA"] == "") {
                     $erro = "* Password required!";
                 } else if ($passwd2 == "") {
                     $erro = "* Repeat password required!";
-                } else if ($dados_usuario["SENHA"] != $passwd2) {
+                }*/ else if ($dados_usuario["SENHA"] != $passwd2) {
                     $erro = "* Different passwords!";
                 } else if ($dados_usuario["USERNAME"] == "") {
                     $erro = "* There are fields to be filled!";

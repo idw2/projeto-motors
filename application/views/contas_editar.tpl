@@ -182,7 +182,7 @@
                                     <p><input type="text" class="form-control" id="lembrete" name="lembrete" maxlength="30" value="{if isset($post_estado)}{$post_lembrete}{else}{$conta->LEMBRETE}{/if}" placeholder="Lembrete de senha"/></p>
                                     <hr/>
                                 </div>
-                                <p><button type="submit" class="btn btn-primary" name="enviar">ENVIAR</button></p>
+                                <p><div>{include file="btn_send.tpl"}</div></p>
 
                             </form>
                         </div>

@@ -18,7 +18,7 @@ class Model {
         if (sizeof($dados) != 0 && $this->_tabela != "") {
             $campos = "`" . implode("`,`", array_keys($dados)) . "`";
             $valores = "'" . implode("','", array_values($dados)) . "'";
-            echo "INSERT INTO `{$this->_tabela}` ({$campos}) VALUES ({$valores});";
+            //echo "INSERT INTO `{$this->_tabela}` ({$campos}) VALUES ({$valores});";
             $this->db->query("INSERT INTO `{$this->_tabela}` ({$campos}) VALUES ({$valores});");
         } else {
             return false;
@@ -49,7 +49,7 @@ class Model {
             $limit = ( $limit != null ? "{$limit}" : "");
             $order_by = ( $order_by != null ? "{$order_by}" : "");
             $group_by = ( $group_by != null ? "{$group_by}" : "");
-            
+
             $q = $this->db->query("SELECT *, DATE_FORMAT( {$this->_tabela}.DTA, '%d/%m/%Y - %Hh%i' ) as DTA FROM `{$this->_tabela}` {$where} {$group_by} {$order_by} {$limit};");
             if ($q->rowCount()) {
                 return $q;
@@ -130,14 +130,19 @@ class Model {
         return $query->rowCount();
     }
 
+    public function insert_fotos_rel_produtos(Array $dados) {
+        $this->_tabela = "fotos_rel_produtos";
+        return $this->insert($dados);
+    }
+
     public function add_fotos($fotos) {
         foreach ($fotos as $k => $foto) {
             $codfoto = strtoupper(md5(uniqid(rand(), true)));
             $destaque = '0';
-            
-            if($k == 0)
+
+            if ($k == 0)
                 $destaque = '1';
-            
+
             $q = array(
                 ':CODFOTO' => $codfoto,
                 ':NOME' => $foto['filename'],
@@ -148,13 +153,13 @@ class Model {
                 ':ORDEM' => $k,
                 ':DESTAQUE' => $destaque
             );
-            
+
             $query = $this->db->prepare("INSERT INTO `fotos` (CODFOTO, NOME, ORIGINAL, CROP770, CROP550, CROP268, ORDEM, DESTAQUE) VALUES (:CODFOTO, :NOME, :ORIGINAL, :CROP770, :CROP550, :CROP268, :ORDEM, :DESTAQUE)");
-            
-            foreach($q as $k=>$v){
+
+            foreach ($q as $k => $v) {
                 $query->bindParam($k, $v, PDO::PARAM_STR);
             }
-            
+
             $query->execute();
             echo 'end';
         }

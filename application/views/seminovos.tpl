@@ -19,7 +19,7 @@
 
                 <br/>
                 <p><textarea class="form-control" rows="25" style="min-width: 100%" id="conteudo" name="conteudo">{$conteudo}</textarea></p>
-                <p><button type="submit" class="btn btn-primary" name="enviar">ENVIAR</button></p>
+                <p><div>{include file="btn_send.tpl"}</div></p>
 
             </form>
 
