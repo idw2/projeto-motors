@@ -6,7 +6,7 @@ class Model {
     protected $_tabela;
     protected $host = "localhost";
     protected $username = "username";
-    protected $dbname = "dbname";
+    protected $dbname = "database";
     protected $password = "password";
 
     public function __construct() {
