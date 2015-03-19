@@ -26,7 +26,7 @@ class Produtos_Model extends Model {
         $this->_tabela = "produtos";
         return $this->insert($dados);
     }
-    
+
     public function insert_produto(Array $dados) {
         if (sizeof($dados) != 0) {
             $campos = "`" . implode("`,`", array_keys($dados)) . "`";
@@ -180,7 +180,7 @@ WHERE produtos.URL_AMIGAVEL='variante' OR produtos.CODPRODUTO='variante'");
         $where = "CODPRODUTO='{$key}' OR URL_AMIGAVEL='{$key}'";
         return $this->update($dados, $where);
     }
-    
+
     public function update_fabricante(Array $dados, $key) {
         $this->_tabela = "fabricantes";
         $where = "CODFABRICANTE='{$key}'";
@@ -212,14 +212,14 @@ WHERE produtos.URL_AMIGAVEL='variante' OR produtos.CODPRODUTO='variante'");
     }
 
     public function get_fabricantes() {
-        
+
         $q = $this->db->query("SELECT fabricantes.* FROM fabricantes ORDER BY FABRICANTE ASC");
 
         if ($q->rowCount()) {
             $c = new Controller();
             while ($rows = $q->fetch(PDO::FETCH_OBJ)) {
                 $rows->FABRICANTE = $rows->FABRICANTE;
-                $rows->PAIS = $rows->PAIS; 
+                $rows->PAIS = $rows->PAIS;
                 $dados[] = $rows;
             }
             return $dados;
@@ -228,6 +228,44 @@ WHERE produtos.URL_AMIGAVEL='variante' OR produtos.CODPRODUTO='variante'");
         }
     }
 
+    public function getWs_get_fabricantes() {
+
+        $q = $this->db->query("SELECT fabricantes.* FROM fabricantes INNER JOIN produtos ON fabricantes.FABRICANTE = produtos.FABRICANTE ORDER BY FABRICANTE ASC");
+
+        if ($q->rowCount()) {
+            $c = new Controller();
+            while ($rows = $q->fetch(PDO::FETCH_OBJ)) {
+                unset($d);
+                foreach ($rows as $name => $value) {
+
+                    $d[] = $value;
+                }
+                $dados[] = $d;
+            }
+            return $dados;
+        } else {
+            return false;
+        }
+    }
+public function getWs_get_fabricantes_vender() {
+
+        $q = $this->db->query("SELECT fabricantes.* FROM fabricantes ORDER BY FABRICANTE ASC");
+
+        if ($q->rowCount()) {
+            $c = new Controller();
+            while ($rows = $q->fetch(PDO::FETCH_OBJ)) {
+                unset($d);
+                foreach ($rows as $name => $value) {
+
+                    $d[] = $value;
+                }
+                $dados[] = $d;
+            }
+            return $dados;
+        } else {
+            return false;
+        }
+    }
     public function get_foto($codfoto) {
         $this->_tabela = "fotos";
         $where = "CODFOTO='{$codfoto}'";
@@ -349,6 +387,89 @@ ORDER BY produtos.`DTA` DESC
         }
     }
 
+    public function getWs_produtos_lista_filtro($categoria = NULL, $fabricante = NULL, $modelo = NULL, $anoinicial = NULL, $anofinal = NULL, $precoinicial = NULL, $precofinal = NULL) {
+
+        ($limit == NULL) ? $limit = "LIMIT 0,4" : $limit = "LIMIT {$limit}";
+
+        if ($categoria != "" || $categoria != NULL) {
+            $categoria = "AND produtos.CATEGORIA IN({$categoria})";
+        }
+        if ($fabricante != "" || $fabricante != NULL) {
+            $fabricante = "AND produtos.FABRICANTE = '{$fabricante}'";
+        }
+        if ($modelo != "" || $modelo != NULL) {
+            $modelo = "AND produtos.CARROCERIA = '{$modelo}'";
+        }
+        if ($anoinicial != "" || $anoinicial != NULL) {
+            $anoinicial = "AND produtos.ANO >= '{$anoinicial}'";
+        }
+        if ($anofinal != "" || $anofinal != NULL) {
+            $anofinal = "AND produtos.ANO <= '{$anofinal}'";
+        }
+        if ($precoinicial != "" || $precoinicial != NULL) {
+            $precoinicial = "AND produtos.PRECO >= '{$precoinicial}'";
+        }
+        if ($precofinal != "" || $precofinal != NULL) {
+            $precofinal = "AND produtos.PRECO <= '{$precofinal}'";
+        }
+
+        $q = $this->db->query("SELECT 
+	produtos.CODPRODUTO,
+	produtos.NOME,
+        produtos.FABRICANTE,
+	produtos.URL_AMIGAVEL,
+	produtos.PRECO,
+	produtos.LINHA_1,
+	produtos.LINHA_2,
+	produtos.LINHA_3,
+	CONCAT('Publicado em: ', DATE_FORMAT( produtos.`DTA` ,  '%d/%m/%Y - %Hh%i' )) AS DTA,
+	CONCAT('http://motors.designlab.com.br', fotos.CROP268) AS FOTO,
+        CONCAT('http://motors.designlab.com.br', fotos.ORIGINAL) AS ORIGINAL, 
+        CONCAT('http://motors.designlab.com.br', fotos.CROP770) AS CROP770, 	
+        CONCAT('http://motors.designlab.com.br', fotos.CROP550) AS CROP550, 	
+        CONCAT('http://motors.designlab.com.br', fotos.CROP268) AS CROP268, 	
+        CONCAT('http://motors.designlab.com.br', fotos.CROP80) AS CROP80, 	
+        CONCAT('http://motors.designlab.com.br', fotos.CROPH1440) AS CROPH1440, 	
+        CONCAT('http://motors.designlab.com.br', fotos.CROPH80) AS CROPH80,
+        produtos.ANO,
+        produtos.KM,
+        produtos.COR,
+        produtos.CAMBIO,
+        produtos.PORTAS,
+        produtos.CARROCERIA,
+        produtos.ESPECIFICACOES
+FROM
+	produtos
+INNER JOIN fotos_rel_produtos ON fotos_rel_produtos.CODPRODUTO=produtos.CODPRODUTO
+INNER JOIN fotos ON fotos_rel_produtos.CODFOTO=fotos.CODFOTO
+WHERE
+produtos.STATUS=1
+AND produtos.SITE LIKE '%{$site}%'
+{$categoria} {$fabricante} {$modelo} {$anoinicial} {$anofinal} {$precoinicial} {$precofinal}    
+AND fotos.DESTAQUE=1
+GROUP BY produtos.CODPRODUTO
+ORDER BY produtos.`DTA` DESC
+{$limit}");
+
+        if ($q->rowCount()) {
+            $c = new Controller();
+            while ($rows = $q->fetch(PDO::FETCH_OBJ)) {
+                unset($d);
+                foreach ($rows as $name => $value) {
+                    if ($name == "PRECO") {
+                        $value = $c->formataReais($value);
+                    }
+
+                    $d[] = $value;
+                }
+                $dados[] = $d;
+            }
+            return $dados;
+        } else {
+            return false;
+        }
+    }
+
     public function getWs_produtos_fotos($site, $url_amigavel) {
 
         $q = $this->db->query("SELECT 
@@ -394,18 +515,18 @@ ORDER BY (fotos.DESTAQUE+0) DESC");
             return false;
         }
     }
-    
+
     public function insert_fotos(Array $dados) {
         $this->_tabela = "fotos";
-        return $this->insert($dados);   
+        return $this->insert($dados);
     }
-    
+
     public function insert_fotos_rel_produtos(Array $dados) {
         $this->_tabela = "fotos_rel_produtos";
         return $this->insert($dados);
     }
 
-     public function qnts_fotos($codproduto_or_url_amigavel) {
+    public function qnts_fotos($codproduto_or_url_amigavel) {
         $query = $this->db->prepare("SELECT * FROM `fotos`
     INNER JOIN `fotos_rel_produtos` ON `fotos_rel_produtos`.CODFOTO=`fotos`.CODFOTO
     INNER JOIN `produtos` ON `fotos_rel_produtos`.CODPRODUTO=`produtos`.CODPRODUTO
@@ -413,6 +534,5 @@ ORDER BY (fotos.DESTAQUE+0) DESC");
         $query->execute();
         return $query->rowCount();
     }
-    
 
 }

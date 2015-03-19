@@ -358,25 +358,22 @@ Class Veiculos extends Controller {
                     $postdata[$n] = $v;
                     
                 }
-                $preco = $postdata["preco"];
-                var_dump($postdata["PRECO"]);
-                die();
-                $nome = $_POST["nome"];
-                $categoria = $_POST["categoria"];
+                $preco = $postdata["PRECO"];
+                $nome = $_POST["NOME"];
+                $categoria = $_POST["CATEGORIA"];
                 $linha_1 = $_POST["linha_1"];
                 $linha_2 = $_POST["linha_2"];
                 $linha_3 = $_POST["linha_3"];
 
-                $ano = $_POST["ano"];
-                $km = $_POST["quilometragem"];
-                $cor = $_POST["cor"];
-                $combustivel = $_POST["combustivel"];
-                $portas = $_POST["portas"];
-                $final_placa = $_POST["placa"];
-                $carroceria = $_POST["carroceria"];
-                $fabricante = $_POST["fabricante"];
-                $especificacoes = $_POST["especificacoes"];
-
+                $ano = $_POST["ANO"];
+                $km = $_POST["QUILOMETRAGEM"];
+                $cor = $_POST["COR"];
+                $combustivel = $_POST["COMBUSTIVEL"];
+                $portas = $_POST["PORTAS"];
+                $final_placa = $_POST["PLACA"];
+                $carroceria = $_POST["CARROCERIA"];
+                $fabricante = $_POST["FABRICANTE"];
+                $especificacoes = $_POST["ESPECIFICACOES"];
                 if ($preco == "") {
                     $erro = "Preço requerido!";
                 } else if ($nome == "") {
@@ -427,6 +424,7 @@ Class Veiculos extends Controller {
                     $dados["OWNER"] = $_SESSION["CODCONTA"];
 
                     if ($model->insert_produto($dados)) {
+                        return $dados["CODPRODUTO"];
                         echo "<script>window.location='/" . LANGUAGE . "/veiculos/veiculos-lista'</script>";
                         die();
                     }
