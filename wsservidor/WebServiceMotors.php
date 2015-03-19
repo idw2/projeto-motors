@@ -95,6 +95,25 @@ $server->register('Motors.getInstitucional',
         'Este metodo retorna um texto insitucional html da empresa do cliente passando como parametro a url da loja'
 );
 
+$server->register('Motors.getList_fabricantes', 
+        array('docXML' => 'xsd:STRING'),
+        array('RETORN' => 'xsd:STRING'),
+        'urn:WebServiceMotors',
+        $server->wsdl->endpoint . '#' . 'Motors.getList_fabricantes',
+        'rpc',
+        'encoded',
+        'Este metodo retorna um xml com os dados dos fabricantes cadastrados'
+);
+$server->register('Motors.getList_fabricantes_vender', 
+        array('docXML' => 'xsd:STRING'),
+        array('RETORN' => 'xsd:STRING'),
+        'urn:WebServiceMotors',
+        $server->wsdl->endpoint . '#' . 'Motors.getList_fabricantes',
+        'rpc',
+        'encoded',
+        'Este metodo retorna um xml com os dados dos fabricantes cadastrados'
+);
+
 $server->register('Motors.getList_veiculos', 
         array('docXML' => 'xsd:STRING'),
         array('RETORN' => 'xsd:STRING'),
@@ -103,6 +122,15 @@ $server->register('Motors.getList_veiculos',
         'rpc',
         'encoded',
         'Este metodo retorna um xml com os dados dos veiculos cadastrados pela conta em base 64 passando como parametro a categoria, limit e a url da loja. Caso nao seja passado a categoria o parametro deve ser enviado null. Caso nao seja passado o limit o parametro deve ser passado null e o valor default do limit se torna 0,4'
+); 
+$server->register('Motors.getList_veiculos_filtro', 
+        array('docXML' => 'xsd:STRING'),
+        array('RETORN' => 'xsd:STRING'),
+        'urn:WebServiceMotors',
+        $server->wsdl->endpoint . '#' . 'Motors.getList_veiculos_filtro',
+        'rpc',
+        'encoded',
+        'Este metodo retorna um xml com os dados dos veiculos cadastrados pela conta em base 64 passando como parametro os campos do filtro. Caso nao seja passado a categoria o parametro deve ser enviado null. Caso nao seja passado o limit o parametro deve ser passado null e o valor default do limit se torna 0,4'
 );
 
 $server->register('Motors.getList_veiculos_fotos', 
